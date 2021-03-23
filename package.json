@@ -1,0 +1,13 @@
+{
+    "name": "app-medical-monitor-backend",
+    "version": "0.0.1",
+    "main": "src/index.js",
+    "license": "MIT",
+    "engines": {
+        "node": ">=14.0.0",
+        "npm": ">=6.0.0"
+    },
+    "scripts": {},
+    "devDependencies": {},
+    "dependencies": {}
+}
