@@ -10,9 +10,24 @@ type FindOneOptions<T> = {
   withRelations?: boolean;
 };
 
+const getDefaultFindOneOptions = <T>(): FindOneOptions<T> => {
+  return {
+    withDeleted: false,
+    withRelations: false,
+  };
+};
+
 type FindManyOptions<T> = FindOneOptions<T> & {
   page?: number;
   size?: number;
+};
+
+const getDefaultFindManyOptions = <T>(): FindManyOptions<T> => {
+  return {
+    ...getDefaultFindOneOptions<T>(),
+    page: 1,
+    size: 25,
+  };
 };
 
 export interface Repository<T> {
@@ -39,28 +54,29 @@ export default class GenericRepository<T> implements Repository<T> {
   constructor(private type: { new (params?: Partial<T>): T }) {}
 
   async findByID(id: string | number, options?: FindOneOptions<T>): Promise<T> {
-    const withDeleted = options?.withDeleted ?? false;
-    const select = options?.select;
-    const relations = options?.relations;
-    const withRelations = options?.withRelations ?? false;
+    const optionsWithDefault: FindOneOptions<T> = {
+      ...getDefaultFindOneOptions(),
+      ...options,
+    };
 
     const foundData = await this.repository.findOne(id, {
-      withDeleted,
-      select,
-      relations,
-      loadRelationIds: withRelations,
+      withDeleted: optionsWithDefault.withDeleted,
+      select: optionsWithDefault.select,
+      relations: optionsWithDefault.relations,
+      loadRelationIds: optionsWithDefault.withRelations,
     });
     if (!foundData) throw new Error("Not found");
     return foundData;
   }
 
   async findAll(options?: FindManyOptions<T>): Promise<T[]> {
-    const page = options?.page ?? 1;
-    const size = options?.size ?? 25;
-    const withDeleted = options?.withDeleted ?? false;
-    const select = options?.select;
-    const relations = options?.relations;
-    const withRelations = options?.withRelations ?? false;
+    const optionsWithDefault: FindManyOptions<T> = {
+      ...getDefaultFindManyOptions(),
+      ...options,
+    };
+
+    const page = optionsWithDefault.page!;
+    const size = optionsWithDefault.size!;
 
     if (page < 0) throw new Error("'page' param must be greater than 0");
     if (size < 0) throw new Error("'size' param must be greater than 0");
@@ -72,10 +88,10 @@ export default class GenericRepository<T> implements Repository<T> {
     return this.repository.find({
       skip,
       take,
-      withDeleted,
-      select,
-      relations,
-      loadRelationIds: withRelations,
+      withDeleted: optionsWithDefault.withDeleted,
+      select: optionsWithDefault.select,
+      relations: optionsWithDefault.relations,
+      loadRelationIds: optionsWithDefault.withRelations,
     });
   }
 
@@ -83,16 +99,16 @@ export default class GenericRepository<T> implements Repository<T> {
     query: typeorm.FindConditions<T>,
     options?: FindOneOptions<T>
   ): Promise<T> {
-    const withDeleted = options?.withDeleted ?? false;
-    const select = options?.select;
-    const relations = options?.relations;
-    const withRelations = options?.withRelations ?? false;
+    const optionsWithDefault: FindOneOptions<T> = {
+      ...getDefaultFindOneOptions(),
+      ...options,
+    };
 
     const foundData = await this.repository.findOne(query, {
-      withDeleted,
-      select,
-      relations,
-      loadRelationIds: withRelations,
+      withDeleted: optionsWithDefault.withDeleted,
+      select: optionsWithDefault.select,
+      relations: optionsWithDefault.relations,
+      loadRelationIds: optionsWithDefault.withRelations,
     });
     if (!foundData) throw new Error("Not found");
     return foundData;
