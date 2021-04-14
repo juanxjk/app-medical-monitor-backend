@@ -8,7 +8,7 @@ const repository = new DeviceRepository();
 export default {
   async index(req: Request, res: Response) {
     try {
-      const { page, size, deleted } = req.query as {
+      const { page, size, deleted, name } = req.query as {
         [key: string]: string;
       };
       const { relations } = req.query;
@@ -16,6 +16,7 @@ export default {
       const devices = await repository.findAll({
         page: +page,
         size: +size,
+        where: removeNullValues({ title: name }),
         withDeleted: deleted === "true" ? true : false,
         relations: ["patient"],
         withRelations: relations === "true" ? true : false,

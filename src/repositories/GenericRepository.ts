@@ -1,11 +1,13 @@
 import * as typeorm from "typeorm";
 import { DeepPartial } from "typeorm";
+import { convertToILike } from "./utils/find";
 
 import app from "../App";
 
 type FindOneOptions<T> = {
   withDeleted?: boolean;
   select?: (keyof T)[];
+  where?: Partial<T>;
   relations?: string[];
   withRelations?: boolean;
 };
@@ -85,12 +87,15 @@ export default class GenericRepository<T> implements Repository<T> {
     let skip = (page - 1) * size;
     let take = size;
 
+    const whereWithILike = convertToILike(optionsWithDefault.where);
+
     return this.repository.find({
       skip,
       take,
       withDeleted: optionsWithDefault.withDeleted,
       select: optionsWithDefault.select,
       relations: optionsWithDefault.relations,
+      where: whereWithILike,
       loadRelationIds: optionsWithDefault.withRelations,
     });
   }

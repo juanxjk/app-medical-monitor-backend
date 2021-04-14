@@ -8,13 +8,14 @@ const repository = new PatientRepository();
 export default {
   async index(req: Request, res: Response) {
     try {
-      const { page, size, deleted } = req.query as {
+      const { page, size, deleted, name } = req.query as {
         [key: string]: string;
       };
 
       const patients = await repository.findAll({
         page: +page,
         size: +size,
+        where: removeNullValues({ fullName: name }),
         withDeleted: deleted === "true" ? true : false,
       });
 
