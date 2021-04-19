@@ -53,6 +53,9 @@ export default class Patient {
   @Column({ nullable: true })
   public bed?: string;
 
+  @Column("text", { nullable: true })
+  public note?: string;
+
   @Column({ nullable: true })
   public prognosis?: string;
 
