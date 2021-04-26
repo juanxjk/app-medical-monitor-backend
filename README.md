@@ -1,4 +1,4 @@
-# App Medical Monitor v0.0.1 [Backend]
+# App Medical Monitor v0.1.0 [Backend]
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
