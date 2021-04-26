@@ -17,6 +17,7 @@ export default {
         size: +size,
         where: removeNullValues({ fullName: name }),
         withDeleted: deleted === "true" ? true : false,
+        relations: ["devices"],
       });
 
       return res.json(patients);
@@ -29,7 +30,9 @@ export default {
     try {
       const { id } = req.params;
 
-      const foundPatient = await repository.findByID(id);
+      const foundPatient = await repository.findByID(id, {
+        relations: ["devices"],
+      });
 
       return res.json(foundPatient);
     } catch (err) {

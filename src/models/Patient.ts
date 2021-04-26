@@ -75,8 +75,8 @@ export default class Patient {
   })
   public comorbidities!: Array<string>;
 
-  @OneToMany((type) => Device, (patientPoll) => patientPoll.patient)
-  public devices?: Promise<Device[]>;
+  @OneToMany((type) => Device, (device) => device.patient)
+  public devices?: Device[];
 
   @CreateDateColumn()
   public createdAt!: Date;
