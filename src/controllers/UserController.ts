@@ -5,7 +5,7 @@ import { removeNullValues } from "./utils/filters";
 
 const repository = new UserRepository();
 
-export default {
+const UserController = {
   async index(req: Request, res: Response) {
     try {
       const { page, size, deleted, name } = req.query as {
@@ -79,3 +79,5 @@ export default {
     }
   },
 };
+
+export default UserController;

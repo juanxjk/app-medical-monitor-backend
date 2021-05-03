@@ -5,7 +5,7 @@ import { removeNullValues } from "./utils/filters";
 
 const repository = new PatientRepository();
 
-export default {
+const PatientController = {
   async index(req: Request, res: Response) {
     try {
       const { page, size, deleted, name } = req.query as {
@@ -82,3 +82,5 @@ export default {
     }
   },
 };
+
+export default PatientController;

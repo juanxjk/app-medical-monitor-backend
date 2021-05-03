@@ -5,7 +5,7 @@ import { removeNullValues } from "./utils/filters";
 
 const repository = new DeviceRepository();
 
-export default {
+const DeviceController = {
   async index(req: Request, res: Response) {
     try {
       const { page, size, deleted, name } = req.query as {
@@ -84,3 +84,5 @@ export default {
     }
   },
 };
+
+export default DeviceController;

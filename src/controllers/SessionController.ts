@@ -6,7 +6,7 @@ import { generateToken } from "./utils/tokens";
 const userRepository = new UserRepository();
 const secret = appConfig.secret;
 
-export default {
+const SessionController = {
   login: async (req: Request, res: Response) => {
     try {
       const { username, password } = req.body;
@@ -30,3 +30,5 @@ export default {
     }
   },
 };
+
+export default SessionController;
