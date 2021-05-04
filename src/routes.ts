@@ -14,6 +14,7 @@ routes.get("/", (req, res) => {
   res.send({ message: "It works! 🎉" });
 });
 routes.post("/sessions", SessionController.login);
+routes.post("/public/users", UserController.createGuestUser);
 
 // AUTHENTICATED
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import UserRepository from "../repositories/UserRepository";
-import { removeNullValues } from "./utils/filters";
+import { filterFields, removeNullValues } from "./utils/filters";
 
 const repository = new UserRepository();
 
@@ -75,6 +75,24 @@ const UserController = {
       return res.status(204).send();
     } catch (err) {
       console.error(err);
+      return res.status(500).json({ error: "Internal Error 500" });
+    }
+  },
+  async createGuestUser(req: Request, res: Response) {
+    try {
+      const body: Partial<User> = req.body;
+
+      const filtered = filterFields(body, [
+        "fullName",
+        "email",
+        "username",
+        "password",
+      ]);
+
+      req.body = filtered;
+
+      return UserController.create(req, res);
+    } catch (err) {
       return res.status(500).json({ error: "Internal Error 500" });
     }
   },
