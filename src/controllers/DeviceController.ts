@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import DeviceRepository from "../repositories/DeviceRepository";
 import Device from "../models/Device";
 import { removeNullValues } from "./utils/filters";
@@ -6,7 +6,7 @@ import { removeNullValues } from "./utils/filters";
 const repository = new DeviceRepository();
 
 const DeviceController = {
-  async index(req: Request, res: Response) {
+  async index(req: Request, res: Response, next: NextFunction) {
     try {
       const { page, size, deleted, name } = req.query as {
         [key: string]: string;
@@ -24,11 +24,11 @@ const DeviceController = {
 
       return res.json(devices);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async show(req: Request, res: Response) {
+
+  async show(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
@@ -38,11 +38,11 @@ const DeviceController = {
 
       return res.json(foundDevice);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async create(req: Request, res: Response) {
+
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       const rawDevice = removeNullValues(req.body);
 
@@ -52,11 +52,11 @@ const DeviceController = {
 
       return res.status(201).json(createdDevice);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async update(req: Request, res: Response) {
+
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
@@ -69,18 +69,17 @@ const DeviceController = {
 
       res.json(updatedDevice);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async delete(req: Request, res: Response) {
+
+  async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       repository.delete(id);
       return res.status(204).send();
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
 };

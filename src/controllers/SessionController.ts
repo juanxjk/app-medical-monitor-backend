@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import appConfig from "../config";
 import UserRepository from "../repositories/UserRepository";
 import { generateToken } from "./utils/tokens";
@@ -7,7 +7,7 @@ const userRepository = new UserRepository();
 const secret = appConfig.secret;
 
 const SessionController = {
-  login: async (req: Request, res: Response) => {
+  login: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { username, password } = req.body;
 
@@ -25,8 +25,7 @@ const SessionController = {
 
       res.json({ token });
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error" });
+      next(err);
     }
   },
 };

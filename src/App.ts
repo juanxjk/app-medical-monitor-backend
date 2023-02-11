@@ -8,6 +8,7 @@ import config from "./config";
 import dbConfig from "./config/ormconfig";
 
 import routes from "./routes";
+import { errorHandler } from "./middlewares/error-handler/errorHandler";
 
 class App {
   public expressApp: Express = express();
@@ -64,6 +65,7 @@ class App {
     this.expressApp.use(cors());
     this.expressApp.use(json());
     this.expressApp.use(routes);
+    this.expressApp.use(errorHandler);
   }
 
   closeDatabase() {

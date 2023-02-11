@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import User from "../models/User";
 import UserRepository from "../repositories/UserRepository";
 import { filterFields, removeNullValues } from "./utils/filters";
@@ -6,7 +6,7 @@ import { filterFields, removeNullValues } from "./utils/filters";
 const repository = new UserRepository();
 
 const UserController = {
-  async index(req: Request, res: Response) {
+  async index(req: Request, res: Response, next: NextFunction) {
     try {
       const { page, size, deleted, name } = req.query as {
         [key: string]: string;
@@ -21,11 +21,11 @@ const UserController = {
 
       return res.json(users);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async show(req: Request, res: Response) {
+
+  async show(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
@@ -33,11 +33,11 @@ const UserController = {
 
       return res.json(foundUser);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async create(req: Request, res: Response) {
+
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       const rawUser = removeNullValues(req.body);
 
@@ -47,11 +47,11 @@ const UserController = {
 
       return res.status(201).json(createdUser);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async update(req: Request, res: Response) {
+
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
@@ -64,21 +64,21 @@ const UserController = {
 
       res.json(updatedUser);
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async delete(req: Request, res: Response) {
+
+  async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       repository.delete(id);
       return res.status(204).send();
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
-  async createGuestUser(req: Request, res: Response) {
+
+  async createGuestUser(req: Request, res: Response, next: NextFunction) {
     try {
       const body: Partial<User> = req.body;
 
@@ -91,9 +91,9 @@ const UserController = {
 
       req.body = filtered;
 
-      return UserController.create(req, res);
+      return UserController.create(req, res, next);
     } catch (err) {
-      return res.status(500).json({ error: "Internal Error 500" });
+      next(err);
     }
   },
 };
