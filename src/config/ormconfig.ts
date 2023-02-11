@@ -9,8 +9,8 @@ const config: ConnectionOptions = {
   username: process.env.DB_USER || "root",
   password: process.env.DB_PASS || "root",
   database: process.env.DB_DATABASE || "app_medical_dev",
-  synchronize: process.env.NODE_ENV == "development" ? true : false,
-  logging: false,
+  synchronize: process.env.DB_SYNC === "true" || false,
+  logging: process.env.DB_LOGGING === "true" || false,
   migrations: ["./src/database/migrations/*.ts"],
   entities: ["./src/models/*.ts"],
   cli: {
