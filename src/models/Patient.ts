@@ -10,8 +10,8 @@ import {
 import Device from "./Device";
 
 export enum GenderType {
-  Masculine = "masculine",
-  Feminine = "feminine",
+  Male = "male",
+  Female = "female",
 }
 
 export enum PatientStatus {
