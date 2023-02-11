@@ -2,7 +2,7 @@ import * as typeorm from "typeorm";
 import { DeepPartial } from "typeorm";
 import { convertToILike } from "./utils/find";
 
-import app from "../App";
+import App from "../App";
 
 type FindOneOptions<T> = {
   withDeleted?: boolean;
@@ -48,10 +48,10 @@ export interface Repository<T> {
 
 export default class GenericRepository<T> implements Repository<T> {
   protected get repository() {
-    if (app.dbConnection) return app.dbConnection.getRepository(this.type);
-    else {
-      throw new Error("Database not connected.");
-    }
+    const app = App.getInstance();
+    if (!app.dbConnection) throw new Error("Database not connected.");
+
+    return app.dbConnection.getRepository(this.type);
   }
   constructor(private type: { new (params?: Partial<T>): T }) {}
 

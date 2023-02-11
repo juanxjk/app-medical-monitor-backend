@@ -10,10 +10,17 @@ import dbConfig from "./config/ormconfig";
 import routes from "./routes";
 import { errorHandler } from "./middlewares/error-handler/errorHandler";
 
-class App {
+let instance: App;
+
+export class App {
   public expressApp: Express = express();
   public expressServer?: Server;
   public dbConnection?: typeorm.Connection;
+
+  static getInstance(): App {
+    if (!instance) instance = new App();
+    return instance;
+  }
 
   async start() {
     console.log("Server is starting...");
@@ -77,4 +84,4 @@ class App {
   }
 }
 
-export default new App();
+export default App;
