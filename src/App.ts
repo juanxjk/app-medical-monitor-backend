@@ -9,6 +9,7 @@ import dbConfig from "./config/ormconfig";
 
 import routes from "./routes";
 import { errorHandler } from "./middlewares/error-handler/errorHandler";
+import Logger from "./utils/Logger";
 
 let instance: App;
 
@@ -23,14 +24,14 @@ export class App {
   }
 
   async start() {
-    console.log("Server is starting...");
+    Logger.info("Server is starting...");
 
     try {
       await this.startHttpServer();
       await this.setupMiddlewares();
       await this.startDatabase();
     } catch (err) {
-      console.error(err);
+      Logger.error(err);
     }
   }
 
@@ -43,10 +44,10 @@ export class App {
     try {
       if (!this.expressServer || !this.expressServer.listening)
         this.expressServer = this.expressApp.listen(config.port, () =>
-          console.log("Server running on port:", config.port)
+          Logger.info("Server running on port: " + config.port)
         );
     } catch (err) {
-      console.error(err);
+      Logger.error(err);
     }
   }
 
@@ -54,17 +55,17 @@ export class App {
     try {
       if (!this.dbConnection) {
         this.dbConnection = await typeorm.createConnection(dbConfig);
-        console.log("Database is connected.");
+        Logger.info("Database is connected.");
 
-        console.log(`Database name: ${this.dbConnection.options.database}.`);
+        Logger.debug(`Database name: ${this.dbConnection.options.database}.`);
 
-        console.log(
+        Logger.debug(
           `Database Sync mode: ${this.dbConnection.options.synchronize}.`
         );
       }
     } catch (err) {
-      console.error("App: database connection error.");
-      console.error(err);
+      Logger.error("App: database connection error.");
+      Logger.error(err);
     }
   }
 
