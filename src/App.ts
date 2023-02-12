@@ -41,28 +41,28 @@ export class App {
   }
 
   async startHttpServer() {
-    try {
-      if (!this.expressServer || !this.expressServer.listening)
-        this.expressServer = this.expressApp.listen(config.port, () =>
-          Logger.info("Server running on port: " + config.port)
-        );
-    } catch (err) {
-      Logger.error(err);
+    if (this.expressServer && this.expressServer.listening) {
+      throw new Error("HTTP Server already running");
     }
+
+    this.expressServer = this.expressApp.listen(config.port, () =>
+      Logger.info("Server running on port:" + config.port)
+    );
   }
 
   async startDatabase() {
     try {
-      if (!this.dbConnection) {
-        this.dbConnection = await typeorm.createConnection(dbConfig);
-        Logger.info("Database is connected.");
+      if (this.dbConnection) return;
 
-        Logger.debug(`Database name: ${this.dbConnection.options.database}.`);
+      this.dbConnection = await typeorm.createConnection(dbConfig);
 
-        Logger.debug(
-          `Database Sync mode: ${this.dbConnection.options.synchronize}.`
-        );
-      }
+      Logger.info("Database is connected.");
+
+      Logger.debug(`Database name: ${this.dbConnection.options.database}.`);
+
+      Logger.debug(
+        `Database Sync mode: ${this.dbConnection.options.synchronize}.`
+      );
     } catch (err) {
       Logger.error("App: database connection error.");
       Logger.error(err);
@@ -81,7 +81,8 @@ export class App {
   }
 
   closeHttpServer() {
-    if (this.expressServer) this.expressServer.close();
+    if (!this.expressServer) return;
+    this.expressServer.close();
   }
 }
 
